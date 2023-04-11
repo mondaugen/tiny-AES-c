@@ -8,46 +8,7 @@
 #define DEFAULT_KEY "00112233445566778899aabbccddeeff"
 #define DEFAULT_IV  "ffeeddccbbaa99887766554433221100"
 
-static void my_assert(int x)
-{
-    if (x != 0) {
-        fprintf(stderr,"got %d\n",x);
-    }
-    assert(x == 0);
-}
-
-static int parse_hexstr(uint8_t *key, const char *keystr, size_t keylen)
-{
-    if ((strlen(keystr) >> 1) != AES_KEYLEN) {
-        return -1;
-    }
-    while (keylen-- > 0) {
-        char tmp[3];
-        tmp[2] = '\0';
-        memcpy(tmp,keystr,2);
-        uint8_t byte;
-        *key++ = (uint8_t)strtol(tmp,NULL,16);
-        keystr += 2;
-    }
-    return 0;
-}
-
-// keylen is the number of bytes in the string or one half the string length
-static void maybe_parse_hexstr(const char *envname, uint8_t *output, size_t keylen, const char *default_hexstr)
-{
-    const char *hexstr = getenv(envname);
-    if (!hexstr) {
-        hexstr = default_hexstr;
-    }
-    my_assert(parse_hexstr(output,hexstr,keylen));
-}
-
-static void print_as_hex(FILE *fd, const uint8_t *x, size_t len)
-{
-    while (len-- > 0) {
-        fprintf(fd,"%.2x ",*x++);
-    }
-}
+#include "_common.h"
 
 int main (void)
 {
