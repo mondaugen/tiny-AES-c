@@ -1,9 +1,9 @@
 #CC           = avr-gcc
 #CFLAGS       = -Wall -mmcu=atmega16 -Os -Wl,-Map,test.map
 #OBJCOPY      = avr-objcopy
-CC           = gcc
-LD           = gcc
-AR           = ar
+CC           ?= gcc
+LD           ?= gcc
+AR           ?= ar
 ARFLAGS      = rcs
 CFLAGS       = -Wall -Os -c
 LDFLAGS      = -Wall -Os -Wl,-Map,test.map
@@ -15,7 +15,7 @@ CFLAGS += -DAES256=1
 endif
 
 OBJCOPYFLAGS = -j .text -O ihex
-OBJCOPY      = objcopy
+OBJCOPY      ?= objcopy
 
 # include path to AVR library
 INCLUDE_PATH = /usr/lib/avr/include
@@ -24,7 +24,7 @@ SPLINT       = splint test.c aes.c -I$(INCLUDE_PATH) +charindex -unrecog
 
 default: test.elf
 
-.SILENT:
+#.SILENT:
 .PHONY:  lint clean
 
 test.hex : test.elf
@@ -43,11 +43,11 @@ test.elf : aes.o test.o
 	echo [LD] $@
 	$(LD) $(LDFLAGS) -o $@ $^
 
-aes.a : aes.o
+libaes.a : aes.o
 	echo [AR] $@
 	$(AR) $(ARFLAGS) $@ $^
 
-lib : aes.a
+lib : libaes.a
 
 clean:
 	rm -f *.OBJ *.LST *.o *.gch *.out *.hex *.map *.elf *.a
