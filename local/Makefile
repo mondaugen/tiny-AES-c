@@ -3,6 +3,9 @@ CFLAGS=-I$(AES_DIR) -g -O0
 LDFLAGS=-L$(AES_DIR)
 LDLIBS=-laes -lc
 
+# program environment variables
+export BLOCKWISE ?= 1
+
 simple_decryptor.bin : simple_decryptor.o
 	gcc $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
