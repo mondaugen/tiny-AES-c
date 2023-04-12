@@ -1,5 +1,5 @@
 #ifndef CTR_BLOCK_CIPHER_H
-#define CTR_BLOCK_CIPHER_H 
+#define CTR_BLOCK_CIPHER_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -13,13 +13,22 @@ typedef struct {
     // function that increments the initialization vector
     void (*increment_iv)(uint8_t *iv, size_t block_size, void *aux);
     // function that encrypts a block of data
-    void (*encrypt_block)(const uint8_t *in, uint8_t *out, size_t block_size, void *aux);
+    void (*encrypt_block)(const uint8_t *in,
+                          uint8_t *out,
+                          size_t block_size,
+                          void *aux);
     // auxiliary data for the increment_iv and encrypt_block functions
     void *aux;
 } ctr_block_cipher_t;
 
 void ctr_block_cipher_default_init(ctr_block_cipher_t *coder);
-void ctr_block_cipher_enc_block(ctr_block_cipher_t *coder, const uint8_t *input, uint8_t *output, size_t block_length);
-void ctr_block_cipher_enc(ctr_block_cipher_t *coder, const uint8_t *input, uint8_t *output, size_t length);
+void ctr_block_cipher_enc_block(ctr_block_cipher_t *coder,
+                                const uint8_t *input,
+                                uint8_t *output,
+                                size_t block_length);
+void ctr_block_cipher_enc(ctr_block_cipher_t *coder,
+                          const uint8_t *input,
+                          uint8_t *output,
+                          size_t length);
 
 #endif /* CTR_BLOCK_CIPHER_H */

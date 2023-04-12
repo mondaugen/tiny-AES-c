@@ -1,11 +1,12 @@
-#include <string.h>
 #include "ctr_block_cipher.h"
+#include <string.h>
 
-#define MIN(x,y) ({ \
-    typeof(x) a = x; \
-    typeof(y) b = y; \
-    a < b ? a : b; \
-})
+#define MIN(x, y)                                                              \
+    ({                                                                         \
+        typeof(x) a = x;                                                       \
+        typeof(y) b = y;                                                       \
+        a < b ? a : b;                                                         \
+    })
 
 static void vect_xor(uint8_t *in_out, const uint8_t *in, size_t len)
 {
@@ -28,25 +29,32 @@ static void vect_inc(uint8_t *in_out, size_t len)
 
 static void default_increment_iv(uint8_t *iv, size_t block_size, void *aux)
 {
-    vect_inc(iv,block_size);
+    vect_inc(iv, block_size);
 }
 
 // block_length must be <= to coder->block_size
-void ctr_block_cipher_enc_block(ctr_block_cipher_t *coder, const uint8_t *input, uint8_t *output, size_t block_length)
+void ctr_block_cipher_enc_block(ctr_block_cipher_t *coder,
+                                const uint8_t *input,
+                                uint8_t *output,
+                                size_t block_length)
 {
     uint8_t tmp[coder->block_size];
-    coder->encrypt_block(coder->iv,tmp,coder->block_size,coder->aux);
+    coder->encrypt_block(coder->iv, tmp, coder->block_size, coder->aux);
     // here the xor and memcpy are only performed on the first block_length
     // bytes so that incomplete blocks can get encoded without padding
-    vect_xor(tmp,input,block_length);
-    memcpy(output,tmp,block_length);
-    coder->increment_iv(coder->iv,coder->block_size,coder->aux);
+    vect_xor(tmp, input, block_length);
+    memcpy(output, tmp, block_length);
+    coder->increment_iv(coder->iv, coder->block_size, coder->aux);
 }
 
-void ctr_block_cipher_enc(ctr_block_cipher_t *coder, const uint8_t *input, uint8_t *output, size_t length)
+void ctr_block_cipher_enc(ctr_block_cipher_t *coder,
+                          const uint8_t *input,
+                          uint8_t *output,
+                          size_t length)
 {
     while (length > 0) {
-        ctr_block_cipher_enc_block(coder,input,output,MIN(length,coder->block_size));
+        ctr_block_cipher_enc_block(coder, input, output,
+                                   MIN(length, coder->block_size));
         length = length < coder->block_size ? 0 : length - coder->block_size;
         input += coder->block_size;
         output += coder->block_size;
@@ -55,6 +63,6 @@ void ctr_block_cipher_enc(ctr_block_cipher_t *coder, const uint8_t *input, uint8
 
 void ctr_block_cipher_default_init(ctr_block_cipher_t *coder)
 {
-    memset(coder,0,sizeof(ctr_block_cipher_t));
+    memset(coder, 0, sizeof(ctr_block_cipher_t));
     coder->increment_iv = default_increment_iv;
 }
