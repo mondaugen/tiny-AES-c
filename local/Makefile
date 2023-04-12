@@ -33,5 +33,8 @@ example1: simple_decryptor.bin
 example2: ctr_code.bin
 	echo -n "0123456789abcdef cool lyfe word doggy" | ./ctr_code.bin | openssl enc -d -aes-128-ctr -K 12341234123412341234123412341234 -iv 43214321432143214321432143214321 > /tmp/ex2 && hexdump -C /tmp/ex2
 
+example3: ctr_code.bin
+	echo -n "0123456789abcdef cool lyfe word doggy" | ./ctr_code.bin | tee /tmp/ex3.a | ./ctr_code.bin > /tmp/ex3.b && hexdump -C /tmp/ex3.a && hexdump -C /tmp/ex3.b
+
 clean:
 	$(RM) *.o *.bin
