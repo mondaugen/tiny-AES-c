@@ -1,5 +1,5 @@
 AES_DIR=..
-CFLAGS=-I$(AES_DIR)
+CFLAGS=-I$(AES_DIR) -g -O0
 LDFLAGS=-L$(AES_DIR)
 LDLIBS=-laes -lc
 
@@ -25,10 +25,10 @@ aes_lib:
 	make -C $(AES_DIR) libaes.a
 
 example1: simple_decryptor.bin
-	echo -ne "0123456789abcdef0123456789abcdef" | openssl enc -aes-128-ctr -K 00112233445566778899aabbccddeeff -iv ffeeddccbbaa99887766554433221100 | tee /tmp/hi | STYLE=CTR ./simple_decryptor.bin > /tmp/out && cat /tmp/out
+	echo -n "0123456789abcdef0123456789abcdef" | openssl enc -aes-128-ctr -K 00112233445566778899aabbccddeeff -iv ffeeddccbbaa99887766554433221100 | tee /tmp/hi | STYLE=CTR ./simple_decryptor.bin > /tmp/out && cat /tmp/out
 
 example2: ctr_code.bin
-	echo -ne "cool boy ya ya" | ./ctr_code.bin | openssl env -d -aes-128-ctr -K 1234123412341234 -iv 4321432143214321
+	echo -n "0123456789abcdef cool lyfe word doggy" | ./ctr_code.bin | openssl enc -d -aes-128-ctr -K 12341234123412341234123412341234 -iv 43214321432143214321432143214321 > /tmp/ex2 && hexdump -C /tmp/ex2
 
 clean:
-	$(RM) simple_decryptor.o simple_decryptor.bin
+	$(RM) *.o *.bin

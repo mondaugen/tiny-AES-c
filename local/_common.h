@@ -46,4 +46,11 @@ static inline void print_as_hex(FILE *fd, const uint8_t *x, size_t len)
     }
 }
 
+static inline int nonnull_strcmp(const char *s1, const char *s2)
+{
+    if (!s1) { return -2; }
+    if (!s2) { return 2; }
+    return strcmp(s1,s2);
+}
+
 #endif /* _COMMON_H */

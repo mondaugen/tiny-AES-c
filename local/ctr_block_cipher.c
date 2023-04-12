@@ -14,14 +14,15 @@ static void vect_xor(uint8_t *in_out, const uint8_t *in, size_t len)
     }
 }
 
-// vector stored lsb first
+// vector stored msb first
 static void vect_inc(uint8_t *in_out, size_t len)
 {
     uint8_t carry = 1;
+    in_out += len;
     while (carry && (len-- > 0)) {
+        in_out--;
         *in_out += carry;
         carry = *in_out == 0;
-        in_out++;
     }
 }
 
@@ -33,8 +34,12 @@ static void default_increment_iv(uint8_t *iv, size_t block_size, void *aux)
 // block_length must be <= to coder->block_size
 void ctr_block_cipher_enc_block(ctr_block_cipher_t *coder, const uint8_t *input, uint8_t *output, size_t block_length)
 {
-    coder->encrypt_block(coder->iv,output,block_length,coder->aux);
-    vect_xor(output,input,block_length);
+    uint8_t tmp[coder->block_size];
+    coder->encrypt_block(coder->iv,tmp,coder->block_size,coder->aux);
+    // here the xor and memcpy are only performed on the first block_length
+    // bytes so that incomplete blocks can get encoded without padding
+    vect_xor(tmp,input,block_length);
+    memcpy(output,tmp,block_length);
     coder->increment_iv(coder->iv,coder->block_size,coder->aux);
 }
 
