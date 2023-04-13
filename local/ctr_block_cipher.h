@@ -25,7 +25,7 @@ void ctr_block_cipher_default_init(ctr_block_cipher_t *coder);
 void ctr_block_cipher_enc_block(ctr_block_cipher_t *coder,
                                 const uint8_t *input,
                                 uint8_t *output,
-                                size_t block_length);
+                                size_t block_size);
 void ctr_block_cipher_enc(ctr_block_cipher_t *coder,
                           const uint8_t *input,
                           uint8_t *output,

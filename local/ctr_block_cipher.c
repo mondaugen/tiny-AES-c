@@ -32,18 +32,18 @@ static void default_increment_iv(uint8_t *iv, size_t block_size, void *aux)
     vect_inc(iv, block_size);
 }
 
-// block_length must be <= to coder->block_size
+// block_size must be <= to coder->block_size
 void ctr_block_cipher_enc_block(ctr_block_cipher_t *coder,
                                 const uint8_t *input,
                                 uint8_t *output,
-                                size_t block_length)
+                                size_t block_size)
 {
     uint8_t tmp[coder->block_size];
     coder->encrypt_block(coder->iv, tmp, coder->block_size, coder->aux);
-    // here the xor and memcpy are only performed on the first block_length
+    // here the xor and memcpy are only performed on the first block_size
     // bytes so that incomplete blocks can get encoded without padding
-    vect_xor(tmp, input, block_length);
-    memcpy(output, tmp, block_length);
+    vect_xor(tmp, input, block_size);
+    memcpy(output, tmp, block_size);
     coder->increment_iv(coder->iv, coder->block_size, coder->aux);
 }
 

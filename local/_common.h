@@ -1,6 +1,8 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 
+#include <stdlib.h>
+#include <stdint.h>
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
